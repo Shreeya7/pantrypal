@@ -1,0 +1,303 @@
+/* ════════════════════════════════════════════════════════
+   landing.css — Splash page + floating emoji styles
+   ════════════════════════════════════════════════════════ */
+
+/* ─── Landing overlay ────────────────────────────────────────────────────── */
+#landing {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: #04080a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#landing.fade-out {
+  animation: landingFade 0.6s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes landingFade {
+  to { opacity: 0; }
+}
+
+/* ─── Ambient radial vignette ────────────────────────────────────────────── */
+#landing::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%,
+      rgba(212,175,55,0.04) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 100% 100% at 50% 100%,
+      rgba(180,30,10,0.12) 0%,
+      transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Floating emojis ────────────────────────────────────────────────────── */
+.float-emoji {
+  position: absolute;
+  font-size: 2.2rem;
+  user-select: none;
+  pointer-events: none;
+  z-index: 1;
+  filter: drop-shadow(0 0 12px rgba(212,175,55,0.35));
+  will-change: transform, opacity;
+  animation: floatDrift var(--dur, 8s) var(--delay, 0s) ease-in-out infinite alternate;
+}
+
+@keyframes floatDrift {
+  0%   { transform: translateY(0px)   rotate(var(--rot-a, -8deg)) scale(1); opacity: 0.55; }
+  50%  { transform: translateY(-30px) rotate(var(--rot-b,  5deg)) scale(1.06); opacity: 0.8; }
+  100% { transform: translateY(8px)   rotate(var(--rot-c, -3deg)) scale(0.96); opacity: 0.6; }
+}
+
+/* ─── Content center ─────────────────────────────────────────────────────── */
+.landing-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+/* Logo icon */
+.landing-pot {
+  font-size: 5.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 30px rgba(212,175,55,0.6))
+          drop-shadow(0 0 60px rgba(212,175,55,0.3));
+  animation: potBob 3s ease-in-out infinite;
+}
+
+@keyframes potBob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%       { transform: translateY(-12px) rotate(3deg); }
+}
+
+/* Title */
+.landing-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(3.5rem, 9vw, 7.5rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  background: linear-gradient(
+    135deg,
+    #fff 0%,
+    var(--c-gold-light, #f0d060) 30%,
+    var(--c-gold, #d4af37) 50%,
+    #fff 70%,
+    var(--c-gold-light, #f0d060) 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s ease infinite;
+  position: relative;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Subtitle */
+.landing-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
+  color: rgba(242,237,230,0.5);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 400;
+  animation: fadeInUp 1.2s 0.4s ease both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Tagline */
+.landing-tagline {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  color: rgba(242,237,230,0.35);
+  max-width: 380px;
+  line-height: 1.7;
+  animation: fadeInUp 1.2s 0.7s ease both;
+}
+
+/* CTA button */
+.landing-cta {
+  position: relative;
+  padding: 18px 54px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #0a0d0a;
+  background: linear-gradient(135deg, #d4af37, #f0d060, #d4af37);
+  background-size: 200% 200%;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  overflow: hidden;
+  animation: fadeInUp 1.2s 1s ease both, ctaPulse 2.5s 2s ease-in-out infinite;
+  box-shadow:
+    0 0 30px rgba(212,175,55,0.5),
+    0 0 80px rgba(212,175,55,0.2),
+    0 8px 32px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: ctaSheen 3.5s 2s ease infinite;
+}
+
+@keyframes ctaSheen {
+  0%   { transform: translateX(-100%); }
+  40%, 100% { transform: translateX(200%); }
+}
+
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(212,175,55,0.5), 0 0 80px rgba(212,175,55,0.2), 0 8px 32px rgba(0,0,0,0.4); }
+  50%       { box-shadow: 0 0 50px rgba(212,175,55,0.8), 0 0 120px rgba(212,175,55,0.35), 0 8px 40px rgba(0,0,0,0.5); }
+}
+
+.landing-cta:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow:
+    0 0 60px rgba(212,175,55,0.9),
+    0 0 140px rgba(212,175,55,0.4),
+    0 16px 40px rgba(0,0,0,0.5);
+}
+
+.landing-cta:active { transform: translateY(0) scale(0.98); }
+
+/* Hint text below button */
+.landing-hint {
+  font-size: 0.7rem;
+  color: rgba(242,237,230,0.2);
+  letter-spacing: 0.08em;
+  animation: fadeInUp 1.2s 1.4s ease both;
+}
+
+/* ─── Fire canvas ────────────────────────────────────────────────────────── */
+#fire-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#fire-canvas.active { opacity: 1; }
+
+/* ─── Ambient background particles (main app) ────────────────────────────── */
+#ambient-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+/* ─── Custom cursor ──────────────────────────────────────────────────────── */
+* { cursor: none !important; }
+
+#cursor-orb {
+  position: fixed;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,175,55,0.9) 0%, rgba(212,175,55,0.3) 60%, transparent 100%);
+  box-shadow:
+    0 0 12px rgba(212,175,55,0.8),
+    0 0 30px rgba(212,175,55,0.4),
+    0 0 60px rgba(212,175,55,0.15);
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+  mix-blend-mode: screen;
+}
+
+#cursor-dot {
+  position: fixed;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.05s linear;
+}
+
+/* Cursor expand on hovering interactive elements */
+body:has(button:hover) #cursor-orb,
+body:has(a:hover) #cursor-orb,
+body:has(.recipe-card:hover) #cursor-orb,
+body:has(.nav-tab:hover) #cursor-orb {
+  width: 44px;
+  height: 44px;
+}
+
+/* ─── Sparkle particles ──────────────────────────────────────────────────── */
+.sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99998;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: sparkleFly var(--dur, 0.8s) ease forwards;
+}
+
+@keyframes sparkleFly {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -40px))) scale(0); }
+}
+
+/* Click burst ring */
+.click-ring {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99997;
+  border-radius: 50%;
+  border: 2px solid rgba(212,175,55,0.8);
+  transform: translate(-50%, -50%) scale(0);
+  animation: ringExpand 0.5s ease forwards;
+}
+
+@keyframes ringExpand {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+}
+
+/* ─── Card scroll reveal ─────────────────────────────────────────────────── */
+.card-hidden {
+  opacity: 0;
+  transform: translateY(24px) scale(0.97);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.card-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}

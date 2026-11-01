@@ -1,0 +1,66 @@
+/* ─── Design Tokens ──────────────────────────────────────────────────────── */
+:root {
+  /* Core palette — deep slate + warm gold */
+  --c-bg:           #080c09;
+  --c-bg-2:         #0e1610;
+  --c-bg-3:         #131f15;
+  --c-surface:      rgba(255,255,255,0.04);
+  --c-surface-2:    rgba(255,255,255,0.07);
+  --c-surface-3:    rgba(255,255,255,0.10);
+  --c-border:       rgba(255,255,255,0.06);
+  --c-border-hover: rgba(255,255,255,0.14);
+  --c-border-focus: rgba(212,175,55,0.5);
+
+  /* Accent — premium gold */
+  --c-gold:         #d4af37;
+  --c-gold-light:   #f0d060;
+  --c-gold-dim:     rgba(212,175,55,0.15);
+  --c-gold-glow:    rgba(212,175,55,0.3);
+
+  /* Status */
+  --c-green:        #3db870;
+  --c-green-dim:    rgba(61,184,112,0.15);
+  --c-amber:        #f0a030;
+  --c-amber-dim:    rgba(240,160,48,0.15);
+  --c-red:          #e05050;
+  --c-red-dim:      rgba(224,80,80,0.12);
+  --c-blue:         #5b9cf6;
+
+  /* Text */
+  --c-text:         #f2ede6;
+  --c-text-2:       rgba(242,237,230,0.7);
+  --c-text-3:       rgba(242,237,230,0.4);
+  --c-text-4:       rgba(242,237,230,0.2);
+
+  /* Typography */
+  --f-display:  'Outfit', sans-serif;
+  --f-body:     'Inter', sans-serif;
+
+  /* Spacing scale */
+  --s-1:2px; --s-2:4px; --s-3:8px; --s-4:12px; --s-5:16px;
+  --s-6:20px; --s-7:24px; --s-8:32px; --s-9:40px; --s-10:48px;
+  --s-11:56px; --s-12:64px; --s-16:80px;
+
+  /* Radius */
+  --r-xs:  4px;
+  --r-sm:  8px;
+  --r-md:  12px;
+  --r-lg:  16px;
+  --r-xl:  22px;
+  --r-2xl: 32px;
+  --r-full:9999px;
+
+  /* Shadows */
+  --shadow-sm:   0 1px 4px rgba(0,0,0,0.4);
+  --shadow-md:   0 4px 20px rgba(0,0,0,0.5);
+  --shadow-lg:   0 12px 40px rgba(0,0,0,0.6);
+  --shadow-xl:   0 24px 80px rgba(0,0,0,0.7);
+  --glow-gold:   0 0 40px rgba(212,175,55,0.2);
+  --glow-green:  0 0 40px rgba(61,184,112,0.15);
+
+  /* Transitions */
+  --t-fast:   120ms ease;
+  --t-mid:    220ms cubic-bezier(0.4,0,0.2,1);
+  --t-slow:   400ms cubic-bezier(0.34,1.56,0.64,1);
+  --t-spring: 500ms cubic-bezier(0.34,1.56,0.64,1);
+}

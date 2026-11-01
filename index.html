@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PantryPal — Smart Anti-Waste Kitchen Assistant</title>
+  <meta name="description" content="Discover recipes from ingredients you already have. Track your fridge, reduce waste, cook smarter — with 62,000+ real recipes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/landing.css" />
+  <link rel="stylesheet" href="/css/features.css" />
+</head>
+<body>
+
+<!-- ─── Fire Canvas (over everything) ──────────────────────────────────────── -->
+<canvas id="fire-canvas"></canvas>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     LANDING PAGE (shown first, z-index 9000)
+════════════════════════════════════════════════════════════════════════════ -->
+<div id="landing" role="main" aria-label="PantryPal splash screen">
+
+  <!-- Floating food emojis injected by JS -->
+
+  <div class="landing-content">
+
+    <div class="landing-pot" aria-hidden="true">🥘</div>
+
+    <h1 class="landing-title">PantryPal</h1>
+    <p class="landing-sub">Smart Anti-Waste Kitchen Assistant</p>
+
+    <p class="landing-tagline">
+      62,000+ real recipes &bull; Smart ingredient matching &bull; Zero food waste
+    </p>
+
+    <button class="landing-cta" id="landing-cta" aria-label="Enter PantryPal">
+      ✨ Enter PantryPal
+    </button>
+
+    <p class="landing-hint">Press Enter or Space to begin</p>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     MAIN APP (hidden until fire transition completes)
+════════════════════════════════════════════════════════════════════════════ -->
+<div id="app-content" style="opacity:0;pointer-events:none;transition:opacity 0.5s ease;">
+
+  <!-- Ambient background canvas -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <div id="app">
+
+    <!-- ─── Header ──────────────────────────────────────────────────────────── -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-icon">🥘</span>
+          <div class="logo-wordmark">
+            <span class="logo-text">PantryPal</span>
+            <span class="logo-tag">anti-waste kitchen</span>
+          </div>
+        </div>
+
+        <nav class="nav-tabs" role="tablist" aria-label="App sections">
+          <button class="nav-tab active" data-tab="match" role="tab" aria-selected="true" aria-controls="panel-match">
+            <span class="tab-icon">✨</span>
+            <span class="tab-label">Smart Match</span>
+          </button>
+          <button class="nav-tab" data-tab="inventory" role="tab" aria-selected="false" aria-controls="panel-inventory">
+            <span class="tab-icon">🧊</span>
+            <span class="tab-label">My Fridge</span>
+          </button>
+          <button class="nav-tab" data-tab="discovery" role="tab" aria-selected="false" aria-controls="panel-discovery">
+            <span class="tab-icon">🍽️</span>
+            <span class="tab-label">Discover</span>
+          </button>
+          <button class="nav-tab" data-tab="roulette" role="tab" aria-selected="false" aria-controls="panel-roulette">
+            <span class="tab-icon">🎲</span>
+            <span class="tab-label">Roulette</span>
+          </button>
+          <button class="nav-tab" data-tab="challenge" role="tab" aria-selected="false" aria-controls="panel-challenge">
+            <span class="tab-icon">♻️</span>
+            <span class="tab-label">Challenge</span>
+          </button>
+          <button class="nav-tab" data-tab="planner" role="tab" aria-selected="false" aria-controls="panel-planner">
+            <span class="tab-icon">📅</span>
+            <span class="tab-label">Meal Plan</span>
+          </button>
+          <button class="nav-tab" data-tab="explorer" role="tab" aria-selected="false" aria-controls="panel-explorer">
+            <span class="tab-icon">🌍</span>
+            <span class="tab-label">Explorer</span>
+          </button>
+          <button class="nav-tab" data-tab="grocery" role="tab" aria-selected="false" aria-controls="panel-grocery">
+            <span class="tab-icon">🛒</span>
+            <span class="tab-label">Grocery</span>
+          </button>
+        </nav>
+
+        <!-- XP HUD -->
+        <div id="xp-hud"></div>
+      </div>
+      <!-- Expiry notification strip (shows when items expire ≤3 days) -->
+      <div id="expiry-notification" class="expiry-notification" hidden role="alert" aria-live="polite"></div>
+    </header>
+
+    <main>
+
+      <!-- ═══ PANEL 1 — Smart Match ═══════════════════════════════════════ -->
+      <section class="tab-panel active" id="panel-match" role="tabpanel">
+
+        <div class="panel-hero">
+          <div class="panel-hero__bg"></div>
+          <div class="panel-hero__overlay"></div>
+          <div class="hero-content">
+            <div class="hero-eyebrow">✨ Zero Waste Cooking</div>
+            <h1 class="hero-title">
+              Cook what's in<br><span>your kitchen.</span>
+            </h1>
+            <p class="hero-subtitle">
+              Tell us what you have. We search 62,000+ recipes and rank them by how many of your ingredients they need.
+            </p>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <div class="hero-stat__num" id="stat-total">62K+</div>
+                <div class="hero-stat__label">Real Recipes</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat__num">1.9K+</div>
+                <div class="hero-stat__label">Indian Dishes</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat__num">∞</div>
+                <div class="hero-stat__label">Possibilities</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="match-workspace">
+
+            <div class="match-panel glass-card">
+              <div class="panel-title">
+                <span class="panel-title-icon">🥗</span>
+                What's in your fridge?
+              </div>
+
+              <label class="expiry-toggle" for="use-expiring-toggle">
+                <span class="expiry-toggle__label">
+                  <span>🔥</span>
+                  Auto-add expiring items (7 days)
+                </span>
+                <div class="toggle-wrap">
+                  <input type="checkbox" id="use-expiring-toggle" />
+                  <span class="toggle-slider"></span>
+                </div>
+              </label>
+
+              <!-- Voice input row -->
+              <div class="voice-row">
+                <button id="voice-mic-btn" title="Voice input — speak your ingredients" aria-label="Voice input">🎤</button>
+                <span style="font-size:0.72rem;color:var(--c-text-4);">or type below</span>
+              </div>
+              <div id="voice-preview"></div>
+
+              <div class="field-group" style="margin-bottom: var(--s-3);">
+                <div class="ing-input-row">
+                  <input
+                    type="text"
+                    id="ingredient-input"
+                    class="field-input"
+                    placeholder="e.g. chicken, ginger, garlic…"
+                    autocomplete="off"
+                    aria-label="Add an ingredient"
+                  />
+                  <button class="btn btn--gold" id="add-ingredient-btn">Add</button>
+                </div>
+                <p class="input-hint">Press <kbd>Enter</kbd> or <kbd>,</kbd> to add quickly</p>
+              </div>
+
+              <div class="chip-list" id="selected-chips" role="list" aria-label="Selected ingredients"></div>
+
+              <div class="divider" style="margin: var(--s-6) 0;"></div>
+
+              <button class="btn btn--green btn--lg btn--full" id="find-recipes-btn" disabled>
+                🔍 Find Recipes
+              </button>
+            </div>
+
+            <div class="match-results" id="match-results">
+              <div class="welcome-state">
+                <div class="welcome-grid">
+                  <div class="welcome-card glass-card">
+                    <div class="welcome-card__num">1</div>
+                    <div class="welcome-card__label">Add ingredients you have</div>
+                  </div>
+                  <div class="welcome-card glass-card">
+                    <div class="welcome-card__num">2</div>
+                    <div class="welcome-card__label">We find matching recipes</div>
+                  </div>
+                  <div class="welcome-card glass-card">
+                    <div class="welcome-card__num">3</div>
+                    <div class="welcome-card__label">Cook without shopping</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ PANEL 2 — Fridge / Inventory ════════════════════════════════ -->
+      <section class="tab-panel" id="panel-inventory" role="tabpanel">
+
+        <div class="panel-hero panel-hero--variant">
+          <div class="panel-hero__bg"></div>
+          <div class="panel-hero__overlay"></div>
+          <div class="hero-content">
+            <div class="hero-eyebrow">🧊 Expiry Tracker</div>
+            <h1 class="hero-title">Your <span>Fridge</span></h1>
+            <p class="hero-subtitle">
+              Log items with expiry dates. We track freshness and alert you before food goes to waste.
+            </p>
+          </div>
+        </div>
+
+        <div class="container">
+          <div id="expiry-banner" class="expiry-banner" hidden role="alert" aria-live="polite"></div>
+
+          <div class="inventory-layout">
+            <aside class="add-panel glass-card">
+              <div class="panel-title"><span class="panel-title-icon">➕</span> Add Item</div>
+              <form id="add-item-form" class="add-form" novalidate>
+                <div class="field-group">
+                  <label class="field-label" for="item-name">Item Name *</label>
+                  <input id="item-name" name="name" type="text" class="field-input" placeholder="e.g. Chicken Breast" required />
+                </div>
+                <div class="form-grid-2">
+                  <div class="field-group">
+                    <label class="field-label" for="item-qty">Quantity</label>
+                    <input id="item-qty" name="quantity" type="text" class="field-input" placeholder="e.g. 500g" />
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="item-cat">Category</label>
+                    <select id="item-cat" name="category" class="field-select">
+                      <option value="">Select…</option>
+                      <option value="meat">🥩 Meat</option>
+                      <option value="chicken">🍗 Chicken</option>
+                      <option value="fish">🐟 Fish</option>
+                      <option value="vegetable">🥦 Vegetable</option>
+                      <option value="fruit">🍎 Fruit</option>
+                      <option value="dairy">🧀 Dairy</option>
+                      <option value="egg">🥚 Eggs</option>
+                      <option value="grain">🌾 Grain / Pasta</option>
+                      <option value="bread">🍞 Bread</option>
+                      <option value="spice">🌶️ Spice</option>
+                      <option value="frozen">🧊 Frozen</option>
+                      <option value="other">📦 Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-grid-2">
+                  <div class="field-group">
+                    <label class="field-label" for="item-bought">Bought on</label>
+                    <input id="item-bought" name="purchased_at" type="date" class="field-input" />
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="item-exp">Expires on</label>
+                    <input id="item-exp" name="expires_at" type="date" class="field-input" />
+                  </div>
+                </div>
+                <button type="submit" class="btn btn--gold btn--lg btn--full">Add to Fridge</button>
+              </form>
+            </aside>
+
+            <div>
+              <div class="list-header">
+                <h2 class="list-title">Your Items</h2>
+                <div class="urgency-legend">
+                  <span><span class="dot dot--ok"></span>Fresh</span>
+                  <span><span class="dot dot--warn"></span>Use soon</span>
+                  <span><span class="dot dot--crit"></span>Urgent</span>
+                </div>
+              </div>
+              <div id="fridge-list" class="fridge-list" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ PANEL 3 — Discovery ══════════════════════════════════════════ -->
+      <section class="tab-panel" id="panel-discovery" role="tabpanel">
+
+        <div class="panel-hero panel-hero--variant">
+          <div class="panel-hero__bg"></div>
+          <div class="panel-hero__overlay"></div>
+          <div class="hero-content">
+            <div class="hero-eyebrow">🍽️ Recipe Library</div>
+            <h1 class="hero-title">Explore <span>62,000+</span> Recipes</h1>
+            <p class="hero-subtitle">
+              Cuisines from across the world — including 1,900+ authentic Indian dishes.
+            </p>
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="filters-wrap glass-card">
+            <div class="search-row">
+              <span class="search-icon">🔍</span>
+              <input
+                type="search"
+                id="discovery-search"
+                class="field-input search-input"
+                placeholder="Search recipes, ingredients, cuisines…"
+                aria-label="Search recipes"
+              />
+            </div>
+            <div class="filter-row">
+              <button class="indian-badge-filter" id="filter-indian-btn" aria-pressed="false">
+                🇮🇳 Indian Recipes
+              </button>
+              <select id="filter-course" class="field-select" aria-label="Filter by course">
+                <option value="">All Courses</option>
+                <option value="main">Main</option>
+                <option value="dessert">Dessert</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="side">Side</option>
+                <option value="salad">Salad</option>
+                <option value="soup">Soup</option>
+                <option value="drink">Drink</option>
+                <option value="snack">Snack</option>
+              </select>
+              <select id="filter-diet" class="field-select" aria-label="Filter by diet">
+                <option value="">All Diets</option>
+                <option value="vegan">🌿 Vegan</option>
+                <option value="gluten">🌾 Gluten-Free</option>
+                <option value="nut_free">🥜 Nut-Free</option>
+              </select>
+              <select id="filter-difficulty" class="field-select" aria-label="Filter by difficulty">
+                <option value="">Any Difficulty</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="discovery-grid" class="recipe-grid" aria-live="polite" aria-label="Recipe results"></div>
+          <div id="discovery-loader" class="loader-row" style="display:none"><div class="spinner"></div></div>
+          <div id="discovery-sentinel" style="height:1px" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <!-- ═══ PANEL 4 — Roulette ═══════════════════════════════════════════ -->
+      <section class="tab-panel" id="panel-roulette" role="tabpanel">
+
+        <div class="panel-hero panel-hero--variant">
+          <div class="panel-hero__bg"></div>
+          <div class="panel-hero__overlay"></div>
+          <div class="hero-content">
+            <div class="hero-eyebrow">🎲 Can't Decide?</div>
+            <h1 class="hero-title">Recipe <span>Roulette</span></h1>
+            <p class="hero-subtitle">
+              Let fate pick from your fridge. One spin, one meal, zero decisions needed.
+            </p>
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="roulette-stage">
+            <div class="wheel-outer">
+              <div class="wheel-glow"></div>
+              <div class="roulette-wheel" id="roulette-wheel">
+                <div class="wheel-inner">🎲</div>
+              </div>
+            </div>
+
+            <button class="btn btn--gold btn--xl" id="spin-btn">
+              🎲 Spin the Wheel!
+            </button>
+
+            <div id="roulette-chosen" class="roulette-chosen"></div>
+          </div>
+
+          <div id="confetti-container" class="confetti-container" aria-hidden="true"></div>
+          <div id="roulette-results" class="roulette-results" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- ═══ PANEL 5 — Chef's Challenge ══════════════════════════════════ -->
+      <section class="tab-panel" id="panel-challenge" role="tabpanel">
+
+        <div class="panel-hero panel-hero--variant">
+          <div class="panel-hero__bg"></div>
+          <div class="panel-hero__overlay"></div>
+          <div class="hero-content">
+            <div class="hero-eyebrow">♻️ Anti-Waste Game</div>
+            <h1 class="hero-title">Chef's <span>Challenge</span></h1>
+            <p class="hero-subtitle">
+              Race against expiry. Cook with your soon-to-expire items &amp; earn XP before it's too late.
+            </p>
+          </div>
+        </div>
+
+        <div class="container">
+          <div id="challenge-container"></div>
+        </div>
+      </section>
+
+      <!-- ═══ PANEL 6 — Meal Planner ═══════════════════════════════════════ -->
+      <section class="tab-panel" id="panel-planner" role="tabpanel">
+
+        <div class="panel-hero panel-hero--variant">
+          <div class="panel-hero__bg"></div>
+          <div class="panel-hero__overlay"></div>
+          <div class="hero-content">
+            <div class="hero-eyebrow">📅 Weekly Planner</div>
+            <h1 class="hero-title">Plan Your <span>Week</span></h1>
+            <p class="hero-subtitle">
+              Schedule breakfast, lunch &amp; dinner for the whole week. Then get a smart shopping list.
+            </p>
+          </div>
+        </div>
+
+        <div class="container">
+          <div id="planner-container"></div>
+        </div>
+      </section>
+
+      <!-- ═══ PANEL 7 — Cuisine Explorer ══════════════════════════════════ -->
+      <section class="tab-panel" id="panel-explorer" role="tabpanel">
+
+        <div class="panel-hero panel-hero--variant">
+          <div class="panel-hero__bg"></div>
+          <div class="panel-hero__overlay"></div>
+          <div class="hero-content">
+            <div class="hero-eyebrow">🌍 World Atlas</div>
+            <h1 class="hero-title">Cuisine <span>Explorer</span></h1>
+            <p class="hero-subtitle">
+              Journey through 21 world cuisines. Tap any to browse its recipes instantly.
+            </p>
+          </div>
+        </div>
+
+        <div class="container">
+          <div id="explorer-container"></div>
+        </div>
+      </section>
+
+      <!-- ═══ PANEL 8 — Grocery List ══════════════════════════════════════ -->
+      <section class="tab-panel" id="panel-grocery" role="tabpanel">
+
+        <div class="panel-hero panel-hero--variant">
+          <div class="panel-hero__bg"></div>
+          <div class="panel-hero__overlay"></div>
+          <div class="hero-content">
+            <div class="hero-eyebrow">🛒 Zero Waste Shopping</div>
+            <h1 class="hero-title">Grocery <span>List</span></h1>
+            <p class="hero-subtitle">
+              Track what you need to buy. Import expiring items with one click. Never double-buy.
+            </p>
+          </div>
+        </div>
+
+        <div class="container">
+          <div id="grocery-container"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      PantryPal &bull; Powered by 62,000+ real recipes &bull; Reducing food waste, one meal at a time 🌍
+    </footer>
+  </div><!-- /#app -->
+</div><!-- /#app-content -->
+
+<!-- Toast container (outside #app so it's always on top) -->
+<div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+<!-- Modal -->
+<dialog id="recipe-modal" class="recipe-modal" aria-label="Recipe details"></dialog>
+
+<script type="module" src="/js/landing.js"></script>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
